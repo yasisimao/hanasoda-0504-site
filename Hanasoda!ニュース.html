@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Hanasoda!ニュース</title>
+   <style>
+    body { font-family: 'Helvetica', sans-serif; background-color: #1a1a1a; color: #fdfaf6; margin:0; padding:0; }
+    header { background-color: #222; padding:20px; text-align:center; }
+    header h1 { margin:0; font-size:28px; color:#fdfaf6; }
+    main { display:flex; max-width:1000px; margin:20px auto; gap:30px; padding: 0 20px; }
+    article { flex:3; background-color:#1f1f1f; padding:20px; border-radius:5px; line-height:1.6; text-align:left; }
+    article h2 { font-size:24px; margin-bottom:15px; }
+    aside { flex:1; background-color:#2a2a2a; padding:15px; border-radius:5px; }
+    aside h3 { font-size:18px; margin-bottom:10px; }
+    a { color: #c97b84; text-decoration: underline; }
+    .hidden { display: none; }
+    .message { text-align:center; padding:50px; font-size:20px; color:#c97b84; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Hanasoda!ニュース</h1>
+</header>
+
+<div id="content" class="hidden">
+  <main>
+    <article>
+  <h2>【速報】自宅で両親死亡、5歳女児を保護　近隣住民が通報</h2>
+  <p>2009年5月9日</p>
+  <p>　8日夜、市内の住宅で30代夫婦が倒れているのが見つかり、その場で死亡が確認された。警察は同居する5歳の長女を現場から保護し、詳しい経緯を調べている。<br>
+　通報があったのは8日午後10時前。近隣住民から「激しい物音と女性の悲鳴が聞こえた」と110番通報があった。駆け付けた警察官が住宅内で血を流して倒れている夫婦を発見した。<br>
+捜査関係者によると、父親は酒に酔っていたとみられ、室内には割れた酒瓶の破片が散乱していたという。両親には刃物のようなもので刺された痕があった。<br>
+</p>
+<p>
+　室内には長女が1人でおり、頬や手などに軽いけがが確認された。母親の身体にも複数の痣があったことから、警察は家庭内で何らかのトラブルが継続していた可能性もあるとみて慎重に調べている。長女は強い心理的ショック状態にあるとみられ、現在は児童相談所を通じて保護されている。</p>
+<p>今後の対応<br>
+　長女については、児童福祉法に基づき専門機関による面接や心理的ケアが行われる見通し。警察は、当時の詳しい状況について関係者への聞き取りを進めている。
+</p>
+<h6>※この記事はフィクションであり、現実のものとは一切の関係もありません。</h6></p>
+  <p><a href="検索エンジン.html">検索ページに戻る</a></p>
+ </article>
+
+    <aside>
+      <h3>関連記事</h3>
+      <ul>
+        <li><a href="事件2.html">【続報】母は父に刺され死亡か　父にも刺し傷、5歳長女が現場に</a></li>
+        <li><a href="事件3.html#flowers">両親死亡事件、父の死因は出血性ショック　司法解剖で判明</a></li>
+        <li><a href="事件4.html">【解説】刑事責任問われず　5歳女児の今後は</a></li>
+        <li><a href="事件5.html">両親死亡事件で浮き彫りに　見えにくい家庭内暴力</a></li>
+        <li><a href="事件6.html">両親死亡事件　5歳長女は刑事責任問われず、福祉措置へ</a></li>
+        <li><a href="事件7.html">市、児童虐待防止対策を確認　先月の死亡事件受け</a></li>
+      </ul>
+    </aside>
+  </main>
+</div>
+
+<div id="notAllowed" class="message hidden">
+  このページは21:44:13〜翌朝5:59までしか閲覧できません。
+  <p><a href="index.html">検索ページに戻る</a></p>
+</div>
+
+<script>
+function checkTime() {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+
+  const start = 21*3600 + 44*60 + 13; // 21:44:13
+  const end = 5*3600 + 59*60 + 59;    // 5:59:59
+  const current = hours*3600 + minutes*60 + seconds;
+
+  let content = document.getElementById("content");
+  let notAllowed = document.getElementById("notAllowed");
+
+  if(current >= start || current <= end) {
+    content.classList.remove("hidden");
+  } else {
+    notAllowed.classList.remove("hidden");
+  }
+}
+
+checkTime();
+</script>
+
+</body>
+</html>

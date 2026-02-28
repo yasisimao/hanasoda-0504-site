@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>HANASODA 検索エンジン</title>
+  <style>
+    body {
+      font-family: 'Helvetica', sans-serif;
+      background-color: #f0f4f2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    h1 {
+      color: #4a7c59;
+      margin-bottom: 40px;
+      font-size: 36px;
+    }
+
+    form {
+      display: flex;
+      gap: 10px;
+    }
+
+    input[type="text"] {
+      width: 350px;
+      padding: 12px;
+      font-size: 16px;
+      border-radius: 20px;
+      border: 1px solid #ccc;
+      outline: none;
+    }
+
+    input[type="submit"] {
+      padding: 12px 20px;
+      border-radius: 20px;
+      border: none;
+      background-color: #4a7c59;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #3f674a;
+    }
+
+    #result {
+      margin-top: 30px;
+      font-size: 18px;
+      color: #333;
+      text-align: center;
+      max-width: 600px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>HANASODA Search</h1>
+
+<form id="searchForm">
+  <input type="text" id="query" placeholder="入力..." required>
+  <input type="submit" value="検索">
+</form>
+
+<div id="result"></div>
+
+<script>
+const form = document.getElementById('searchForm');
+const resultDiv = document.getElementById('result');
+
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const query = document.getElementById('query').value.trim().toLowerCase();
+  
+  // 検索結果をページリンクに置き換える
+  let result = "";
+
+  if(query.includes("さき") || query.includes("咲希")) {
+    result = `<a href="characters.html">Saki – Go to character page</a>`;
+  } else if(query.includes("ひな") || query.includes("妃梨")) {
+    result = `<a href="characters.html#hina">Hina – Go to character page</a>`;
+  } else if(query.includes("花") || query.includes("植物")) {
+    result = `<a href="world.html#flowers">Flowers – Go to world page</a>`;
+  } else if(query.includes("ニュース") || query.includes("news")) {
+    result = `<a href="news.html">News – Go to news page</a>`;
+  } else if(query.includes("事件") || query.includes("あの日") || query.includes("5月8日")) {
+    result = `<a href="Hanasoda!ニュース.html">【速報】自宅で両親死亡、5歳女児を保護　近隣住民が通報</a>`;
+  } else if(query.includes("トップページ") || query.includes("花咲く場所で希望を育てて") || query.includes("はなそだ")) {
+    result = `<a href="トップページ.html">花咲く場所で希望を育てて　公式サイト</a>`;
+  } else {
+    result = `"${query}"に一致する検索結果は見つかりませんでした。`;
+  }
+
+  resultDiv.innerHTML = result; // HTMLとして表示
+});
+</script>
+</body>
+</html>

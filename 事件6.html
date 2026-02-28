@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Hanasoda!ニュース</title>
+   <style>
+    body { font-family: 'Helvetica', sans-serif; background-color: #1a1a1a; color: #fdfaf6; margin:0; padding:0; }
+    header { background-color: #222; padding:20px; text-align:center; }
+    header h1 { margin:0; font-size:28px; color:#fdfaf6; }
+    main { display:flex; max-width:1000px; margin:20px auto; gap:30px; padding: 0 20px; }
+    article { flex:3; background-color:#1f1f1f; padding:20px; border-radius:5px; line-height:1.6; text-align:left; }
+    article h2 { font-size:24px; margin-bottom:15px; }
+    aside { flex:1; background-color:#2a2a2a; padding:15px; border-radius:5px; }
+    aside h3 { font-size:18px; margin-bottom:10px; }
+    a { color: #c97b84; text-decoration: underline; }
+    .hidden { display: none; }
+    .message { text-align:center; padding:50px; font-size:20px; color:#c97b84; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Hanasoda!ニュース</h1>
+</header>
+
+<div id="content" class="hidden">
+  <main>
+    <article>
+  <h2>両親死亡事件　5歳長女は刑事責任問われず、福祉措置へ</h2>
+  <p>2009年5月21日</p>
+  <p>　市内で発生した夫婦死亡事件で、現場にいた5歳の長女について、児童相談所が引き続き心理的ケアを行っていることが分かった。<br>
+　関係者によると、長女は現在も一時保護下にあり、今後の生活環境について慎重に検討が進められているという。<br>
+　警察は捜査を継続しているが、女児は刑事責任能力のない年齢であることから、事件は児童福祉法に基づく対応が中心となる見通し。 事件を巡る新たな発表は現時点でない。
+</p>
+<h6>※この記事はフィクションであり、現実のものとは一切の関係もありません。</h6></p>
+  <p><a href="検索エンジン.html">検索ページに戻る</a></p>
+ </article>
+
+    <aside>
+      <h3>関連記事</h3>
+      <ul>
+        <li><a href="Hanasoda!ニュース.html">【速報】自宅で両親死亡、5歳女児を保護　近隣住民が通報</a></li>
+        <li><a href="事件2.html">【続報】母は父に刺され死亡か　父にも刺し傷、5歳長女が現場に</a></li>
+        <li><a href="事件3.html">両親死亡事件、父の死因は出血性ショック　司法解剖で判明</a></li>
+        <li><a href="事件4.html">【解説】刑事責任問われず　5歳女児の今後は</a></li>
+        <li><a href="事件5.html">両親死亡事件で浮き彫りに　見えにくい家庭内暴力</a></li>
+        <li><a href="事件7.html">市、児童虐待防止対策を確認　先月の死亡事件受け</a></li>
+      </ul>
+    </aside>
+  </main>
+</div>
+
+<div id="notAllowed" class="message hidden">
+  このページは21:44:13〜翌朝5:59までしか閲覧できません。
+  <p><a href="index.html">検索ページに戻る</a></p>
+</div>
+
+<script>
+function checkTime() {
+  const now = new Date();
+  const hours = now.getHours();
+  const minutes = now.getMinutes();
+  const seconds = now.getSeconds();
+
+  const start = 21*3600 + 44*60 + 13; // 21:44:13
+  const end = 5*3600 + 59*60 + 59;    // 5:59:59
+  const current = hours*3600 + minutes*60 + seconds;
+
+  let content = document.getElementById("content");
+  let notAllowed = document.getElementById("notAllowed");
+
+  if(current >= start || current <= end) {
+    content.classList.remove("hidden");
+  } else {
+    notAllowed.classList.remove("hidden");
+  }
+}
+
+checkTime();
+</script>
+
+</body>
+</html>
