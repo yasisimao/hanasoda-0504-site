@@ -3,20 +3,158 @@
 <head>
 <meta charset="UTF-8">
 <title>WORLD</title>
+<style>
+body {
+  margin: 0;
+  font-family: "Hiragino Sans", sans-serif;
+}
+
+/* ===== ヘッダー ===== */
+header {
+  position: fixed;
+  width: 100%;
+  height: 60px;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  border-bottom: 1px solid #ddd;
+  z-index: 1000;
+}
+
+.logo {
+  font-weight: bold;
+}
+
+.pc-nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #333;
+  font-weight: bold;
+}
+
+.pc-nav a:hover {
+  color: #ff6699;
+}
+
+/* ===== ハンバーガー ===== */
+.menu-icon {
+  display: none;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+/* ===== スマホメニュー ===== */
+#sp-menu {
+  position: fixed;
+  top: 0;
+  right: -250px;
+  width: 250px;
+  height: 100vh;
+  background: white;
+  display: flex;
+  flex-direction: column;
+  padding-top: 80px;
+  transition: 0.3s;
+  z-index: 1100;
+}
+
+#sp-menu a {
+  padding: 15px 20px;
+  text-decoration: none;
+  color: #333;
+  border-bottom: 1px solid #eee;
+}
+
+#sp-menu.active {
+  right: 0;
+}
+
+/* ===== 背景暗転 ===== */
+#overlay {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.4);
+  top: 0;
+  left: 0;
+  display: none;
+  z-index: 1000;
+}
+
+#overlay.active {
+  display: block;
+}
+
+/* ===== レスポンシブ ===== */
+@media (max-width: 768px) {
+  .pc-nav {
+    display: none;
+  }
+
+  .menu-icon {
+    display: block;
+  }
+}
+
+.world-container {
+  max-width: 900px;   /* 横幅制限 */
+  margin: 120px auto; /* 上下余白＋中央寄せ */
+  padding: 0 40px;    /* 左右余白 */
+  line-height: 1.9;   /* 行間広く */
+}
+
+.world-container h1 {
+  font-size: 32px;
+  margin-bottom: 40px;
+  border-left: 6px solid #ff6699;
+  padding-left: 15px;
+}
+
+.world-container h2 {
+  margin-top: 50px;
+  font-size: 20px;
+}
+
+.world-container p {
+  margin-top: 20px;
+}
+</style>
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header>
-  <nav>
+  <div class="logo">花咲く場所で希望を育てて</div>
+
+  <!-- PC用メニュー -->
+  <nav class="pc-nav">
     <a href="index.html">TOP</a>
+    <a href="世界観.html">WORLD</a>
     <a href="character.html">CHARACTER</a>
     <a href="news.html">NEWS</a>
     <a href="検索エンジン.html">SEARCH</a>
   </nav>
+
+  <!-- スマホ用三本線 -->
+  <div class="menu-icon" onclick="toggleMenu()">☰</div>
 </header>
 
+<!-- スマホメニュー -->
+<nav id="sp-menu">
+  <a href="index.html">TOP</a>
+  <a href="世界観.html">WORLD</a>
+  <a href="character.html">CHARACTER</a>
+  <a href="news.html">NEWS</a>
+  <a href="検索エンジン.html">SEARCH</a>
+</nav>
+
+<!-- 背景暗転 -->
+<div id="overlay" onclick="toggleMenu()"></div>
 <div class="section">
+
+<div class="world-container">
   <h1>WORLD</h1>
 
   <p>
@@ -31,6 +169,13 @@
   「HANASODA」が使用されている。
   </p>
 </div>
+
+<script>
+function toggleMenu() {
+  document.getElementById("sp-menu").classList.toggle("active");
+  document.getElementById("overlay").classList.toggle("active");
+}
+</script>
 
 </body>
 </html>
