@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHARACTER</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: "Hiragino Sans", sans-serif;
+  overflow-x: hidden;
+  transition: filter 0.5s ease;
+}
+
+/* タイトル */
+h1 {
+  text-align: center;
+  margin-top: 120px;
+  margin-bottom: 40px;
+  letter-spacing: 5px;
+}
+
+/* タブ */
+.tab-buttons {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  white-space: nowrap;
+  justify-content: center;
+  padding-bottom: 20px;
+}
+
+.tab-buttons button {
+  flex: 0 0 auto;
+  padding: 10px 30px;
+  border: none;
+  background: none;
+  font-size: 14px;
+  cursor: pointer;
+  position: relative;
+}
+
+.tab-buttons button.active {
+  font-weight: bold;
+}
+
+.tab-buttons button.active::after {
+  content: "";
+  display: block;
+  height: 3px;
+  margin-top: 5px;
+}
+
+.tab-buttons button.active:nth-child(1)::after {
+  background: #4CAF50;
+}
+
+.tab-buttons button.active:nth-child(2)::after {
+  background: #e91e63;
+}
+
+/* フェード */
+.character-content {
+  position: absolute;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 0.6s ease;
+  pointer-events: none;
+}
+
+.character-content.active {
+  opacity: 1;
+  pointer-events: auto;
+  position: relative;
+}
+
+/* 背景 */
+.char-bg1 {
+  background: linear-gradient(to right, #e8f5e9, #ffffff);
+  height: 600px;
+}
+
+.char-bg2 {
+  background: linear-gradient(to right, #fde4ec, #ffffff);
+  height: 600px;
+}
+
+/* レイアウト */
+.character-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  gap: 50px;
+  padding: 0 40px;
+}
+
+.character-inner img {
+  height: 500px;
+}
+
+.character-text h2 {
+  font-size: 28px;
+  margin-bottom: 20px;
+}
+
+#char1 .character-text h2 { color: #4CAF50; }
+#char2 .character-text h2 { color: #e91e63; }
+
+.character-text p {
+  line-height: 2;
+  max-width: 400px;
+}
+
+/* 夜モード */
+.night-mode {
+  filter: brightness(0.85);
+}
+
+/* ブラックアウト */
+#blackout {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: black;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+/* ノイズ */
+#noise-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0;
+  background-image: repeating-linear-gradient(
+    0deg,
+    rgba(255,255,255,0.15) 0px,
+    rgba(255,255,255,0.15) 1px,
+    transparent 1px,
+    transparent 2px
+  );
+  z-index: 9999;
+}
+
+/* アニメーション */
+@keyframes blackoutFlash {
+  0% { opacity: 0; }
+  50% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+@keyframes noiseFlash {
+  0% { opacity: 0; }
+  20% { opacity: 0.7; }
+  40% { opacity: 0.3; }
+  60% { opacity: 0.8; }
+  80% { opacity: 0.2; }
+  100% { opacity: 0; }
+}
+
+@keyframes screenShake {
+  0% { transform: translate(0,0); }
+  25% { transform: translate(-5px,2px); }
+  50% { transform: translate(4px,-3px); }
+  75% { transform: translate(-3px,4px); }
+  100% { transform: translate(0,0); }
+}
+
+.shake {
+  animation: screenShake 0.3s ease;
+}
+
+/* グリッチ */
+@keyframes glitch {
+  0% { transform: translate(0); }
+  20% { transform: translate(-2px, 1px); }
+  40% { transform: translate(2px, -1px); }
+  60% { transform: translate(-1px, 2px); }
+  80% { transform: translate(1px, -2px); }
+  100% { transform: translate(0); }
+}
+
+.glitch {
+  animation: glitch 0.15s infinite;
+}
+
+/* スマホ */
+@media (max-width: 768px) {
+  .char-bg1, .char-bg2 {
+    height: auto;
+    padding: 40px 0;
+  }
+  .character-inner {
+    flex-direction: column;
+    text-align: center;
+  }
+  .character-inner img {
+    height: 350px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="blackout"></div>
+<div id="noise-overlay"></div>
+
+<h1>CHARACTER</h1>
+
+<div class="tab-buttons">
+  <button class="tab active" onclick="showCharacter(1)">咲希</button>
+  <button class="tab" onclick="showCharacter(2)">妃梨</button>
+</div>
+
+<!-- 咲希 -->
+<div id="char1" class="character-content active char-bg1">
+  <div class="character-inner">
+
+    <div id="saki-day">
+      <img src="saki.png" alt="咲希">
+      <div class="character-text">
+        <h2>茅野 咲希</h2>
+         <h4>プロフィール</h4>
+大学1年生<br>
+誕生日：5月4日<br>
+身長：158㎝<br><p>
+        クールで冷静。<br>
+        どこか近寄りがたい空気を纏い、必要以上に他人と関わろうとはしない。<br></p>
+<h4>好きなもの</h4>
+・甘いもの<br>
+・猫<br>
+・妃梨
+      </p>
+
+      </div>
+    </div>
+
+    <div id="saki-night" style="display:none;">
+      <img src="saki-night.png" alt="Hornet">
+      <div class="character-text">
+        <h2 id="saki-name-night">Hornet</h2>
+        <p>
+          単独行動に特化した実働要員。<br>
+卓越した身体能力と瞬間判断力を持ち、標的に気付かれることなく任務を完遂する。<br>
+無駄のない動作と極めて低い感情表出により、ターゲットへの干渉リスクは最小限。<br></p><p>
+
+――小型・高機動・即戦力。
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 妃梨 -->
+<div id="char2" class="character-content char-bg2">
+  <div class="character-inner">
+    <img src="hiri.png" alt="妃梨">
+    <div class="character-text">
+      <h2>栗栖川 妃梨</h2>
+      <h4>プロフィール</h4>
+大学1年生<br>
+誕生日：7月24日<br>
+身長：156㎝<br><p>
+        明るく人懐っこく、自然と人の輪の中心にいる存在。<br>
+        少し天真爛漫に見えるが、内側には揺るがない芯の強さを持つ。<br></p>
+<h4>好きなもの</h4>
+・咲希<br>
+・カフェ<br>
+・オシャレ
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+function showCharacter(num) {
+  document.querySelectorAll('.character-content').forEach(c => {
+    c.classList.remove('active');
+  });
+  document.querySelectorAll('.tab').forEach(t => {
+    t.classList.remove('active');
+  });
+  document.getElementById('char' + num).classList.add('active');
+  document.querySelectorAll('.tab')[num - 1].classList.add('active');
+}
+
+function checkNightVersion() {
+  const now = new Date();
+  const hour = now.getHours();
+
+  if (hour >= 0 && hour <= 3) {
+
+    document.getElementById("saki-day").style.display = "none";
+    document.getElementById("saki-night").style.display = "block";
+    document.getElementById("saki-name-night").classList.add("glitch");
+
+    const blackout = document.getElementById("blackout");
+    const overlay = document.getElementById("noise-overlay");
+    const body = document.body;
+
+    blackout.style.animation = "blackoutFlash 0.25s ease";
+
+    setTimeout(() => {
+      body.classList.add("shake");
+      overlay.style.animation = "noiseFlash 0.4s ease";
+      body.classList.add("night-mode");
+    }, 200);
+
+    setTimeout(() => {
+      body.classList.remove("shake");
+      blackout.style.animation = "";
+      overlay.style.animation = "";
+    }, 700);
+
+    setInterval(() => {
+      const base = "HORNET";
+      const chars = ["#", "0", "咲", "X", "?", "希", "▓"];
+      let glitched = "";
+      for (let i = 0; i < base.length; i++) {
+        if (Math.random() < 0.3) {
+          glitched += chars[Math.floor(Math.random() * chars.length)];
+        } else {
+          glitched += base[i];
+        }
+      }
+      document.getElementById("saki-name-night").innerText = glitched;
+    }, 120);
+  }
+}
+
+checkNightVersion();
+</script>
+
+</body>
+</html>
