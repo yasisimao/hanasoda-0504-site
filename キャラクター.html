@@ -60,6 +60,15 @@ h1 {
   background: #e91e63;
 }
 
+.tab-buttons button.active:nth-child(3)::after {
+  background: #4CAF50;
+}
+
+.tab-buttons button.active:nth-child(4)::after {
+  background: #e91e63;
+}
+
+
 /* フェード */
 .character-content {
   position: absolute;
@@ -86,6 +95,17 @@ h1 {
   height: 600px;
 }
 
+.char-bg3 {
+  background: linear-gradient(to right, #e8f5e9, #ffffff);
+  height: 600px;
+}
+
+.char-bg4 {
+  background: linear-gradient(to right, #fde4ec, #ffffff);
+  height: 600px;
+}
+
+
 /* レイアウト */
 .character-inner {
   max-width: 1200px;
@@ -108,6 +128,9 @@ h1 {
 
 #char1 .character-text h2 { color: #4CAF50; }
 #char2 .character-text h2 { color: #e91e63; }
+#char3 .character-text h2 { color: #4CAF50; }
+#char4 .character-text h2 { color: #e91e63; }
+
 
 .character-text p {
   line-height: 2;
@@ -220,6 +243,8 @@ h1 {
 <div class="tab-buttons">
   <button class="tab active" onclick="showCharacter(1)">咲希</button>
   <button class="tab" onclick="showCharacter(2)">妃梨</button>
+  <button class="tab" onclick="showCharacter(3)">イツキネコ</button>
+  <button class="tab" onclick="showCharacter(4)">店長</button>
 </div>
 
 <!-- 咲希 -->
@@ -282,6 +307,43 @@ h1 {
     </div>
   </div>
 </div>
+
+<!-- イツキネコ -->
+<div id="char3" class="character-content char-bg3">
+  <div class="character-inner">
+    <img src="hiri.png" alt="イツキネコ">
+    <div class="character-text">
+      <h2>イツキネコ</h2>
+      <h4>プロフィール</h4>
+<p>
+        明るく人懐っこく、自然と人の輪の中心にいる存在。<br>
+        少し天真爛漫に見えるが、内側には揺るがない芯の強さを持つ。<br>
+    </p>
+    </div>
+  </div>
+</div>
+
+<!-- 店長 -->
+<div id="char4" class="character-content char-bg4">
+  <div class="character-inner">
+    <img src="hiri.png" alt="麻耶">
+    <div class="character-text">
+      <h2>桜井 麻耶</h2>
+      <h4>プロフィール</h4>
+花屋の店長<br>
+誕生日：9月15日<br>
+身長：168㎝<br><p>
+        おっとりしていて、ちょっと天然。<br>
+        人懐っこくて感情豊かな、大型犬系の女性。<br></p>
+<h4>好きなもの</h4>
+・植物<br>
+・猫<br>
+・茶色
+      </p>
+    </div>
+  </div>
+</div>
+
 
 <script>
 function showCharacter(num) {
