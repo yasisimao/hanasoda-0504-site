@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>Sodatter</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f8fa;
+  transition: background 0.5s, color 0.5s;
+}
+
+.container {
+  display: grid;
+  grid-template-columns: 250px 1fr 300px;
+  max-width: 1200px;
+  margin: auto;
+  min-height: 100vh;
+}
+
+.sidebar {
+  padding: 20px;
+  border-right: 1px solid #ddd;
+  background: white;
+}
+
+.sidebar h2 { margin-bottom: 20px; }
+
+.menu-item {
+  padding: 10px 0;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.menu-item:hover { color: #1da1f2; }
+
+.timeline {
+  background: white;
+  border-right: 1px solid #ddd;
+}
+
+.post-box {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+.post-box textarea {
+  width: 100%;
+  height: 60px;
+  resize: none;
+  border: none;
+  outline: none;
+  font-size: 16px;
+}
+
+.post-btn {
+  background: #1da1f2;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  float: right;
+}
+
+.post {
+  padding: 15px;
+  border-bottom: 1px solid #ddd;
+  animation: fadeIn 0.6s ease;
+}
+
+.post strong {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.rightbar {
+  padding: 20px;
+  background: #f5f8fa;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  margin-bottom: 15px;
+  border-radius: 10px;
+}
+
+@media (max-width: 900px) {
+  .container { grid-template-columns: 1fr; }
+  .sidebar, .rightbar { display: none; }
+}
+
+.night {
+  background: #0f0f14 !important;
+  color: #ddd !important;
+}
+
+.night .timeline,
+.night .sidebar,
+.night .card {
+  background: #1a1a22;
+  border-color: #333;
+}
+
+@keyframes fadeIn {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+.post-meta {
+  font-size: 12px;
+  color: gray;
+  margin-top: 8px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.post-meta button {
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.post-meta button:hover { color: #1da1f2; }
+
+.like-btn.liked {
+  color: #ff2d55;
+  font-weight: bold;
+}
+
+.retweet-btn.retweeted {
+  color: #17bf63;
+  font-weight: bold;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="sidebar">
+  <h2>Sodatter</h2>
+  <div class="menu-item">ホーム</div>
+  <div class="menu-item">検索</div>
+  <div class="menu-item">通知</div>
+  <div class="menu-item">プロフィール</div>
+</div>
+
+<div class="timeline">
+
+  <div class="post-box">
+    <textarea id="postInput" placeholder="いまどうしてる？"></textarea>
+    <button class="post-btn" onclick="addPost()">投稿</button>
+    <div style="clear: both;"></div>
+  </div>
+
+  <div id="posts"></div>
+
+</div>
+
+<div class="rightbar">
+  <div class="card">
+    <strong>トレンド</strong>
+    <p>#はなそだ</p>
+    <p>#くろもも</p>
+    <p>#猫</p>
+  </div>
+</div>
+
+</div>
+
+<script>
+const posts = document.getElementById("posts");
+
+/* 時間＆いいね */
+function getTimeAgo() {
+  return Math.floor(Math.random() * 5) + 1 + "分前";
+}
+
+/* 投稿HTML生成（改良版） */
+function createPostHTML(username, content, verified=false) {
+
+  const isMe = (username === "あなた");
+  const isOfficial = username.includes("公式");
+
+  let initialLikes = 0;
+  let initialRTs = 0;
+
+  if(isOfficial) {
+    initialLikes = Math.floor(Math.random() * 600) + 200;
+    initialRTs = Math.floor(Math.random() * 200) + 50;
+  }
+
+  const timeLabel = isMe ? "今" : getTimeAgo();
+
+  return `
+    <strong class="username" data-name="${username}">
+      ${username}
+      ${verified ? '<span style="color:#1da1f2;"> ✔</span>' : ''}
+    </strong>
+    ${content}
+    <div class="post-meta">
+      <span>${timeLabel}</span>
+
+      <button class="like-btn" onclick="likePost(this)">
+        ❤️ <span class="like-count">${initialLikes}</span>
+      </button>
+
+      <button onclick="replyPost(this)">💬 リプ</button>
+
+      <button class="retweet-btn" onclick="retweetPost(this)">
+        🔁 <span class="rt-count">${initialRTs}</span>
+      </button>
+    </div>
+    <div class="replies"></div>
+  `;
+}
+/* 自分投稿 */
+function addPost() {
+  const input = document.getElementById("postInput");
+  if(input.value.trim() === "") return;
+
+  const newPost = document.createElement("div");
+  newPost.className = "post";
+  newPost.innerHTML = createPostHTML("あなた", input.value);
+
+  posts.prepend(newPost);
+  input.value = "";
+}
+
+/* いいね */
+function likePost(button) {
+  const countSpan = button.querySelector(".like-count");
+  let count = parseInt(countSpan.textContent);
+  const liked = button.classList.contains("liked");
+
+  if(liked) {
+    count--;
+    button.classList.remove("liked");
+  } else {
+    count++;
+    button.classList.add("liked");
+  }
+
+  countSpan.textContent = count;
+}
+
+/* リプ */
+function replyPost(button) {
+  const reply = prompt("返信を入力:");
+  if(!reply) return;
+
+  const repliesDiv = button.closest(".post").querySelector(".replies");
+
+  const newReply = document.createElement("div");
+  newReply.style.fontSize = "13px";
+  newReply.style.marginTop = "5px";
+  newReply.innerHTML = "<strong>あなた</strong> " + reply;
+
+  repliesDiv.appendChild(newReply);
+}
+
+/* RT */
+function retweetPost(btn) {
+  const post = btn.closest(".post");
+  const countSpan = btn.querySelector(".rt-count");
+  let count = parseInt(countSpan.textContent);
+  const retweeted = btn.classList.contains("retweeted");
+
+  if (retweeted) {
+    // 取り消し → コピーを削除
+    const rtCopy = posts.querySelector(".retweet-copy");
+    if (rtCopy) rtCopy.remove();
+    count--;
+    btn.classList.remove("retweeted");
+  } else {
+    // 投稿内容だけ取得（username, meta, repliesは除く）
+    const contentDivs = Array.from(post.childNodes).filter(
+      el => el.nodeType === 3 || (el.tagName && el.tagName !== "DIV") || (el.className !== "post-meta" && el.className !== "replies")
+    );
+
+    let contentHTML = "";
+    contentDivs.forEach(el => contentHTML += el.outerHTML || el.textContent);
+
+    const rtPost = document.createElement("div");
+    rtPost.className = "post retweet-copy";
+    rtPost.style.borderLeft = "4px solid #1da1f2";
+
+    rtPost.innerHTML = `
+      <strong class="username" data-name="あなた">あなたがリポスト</strong>
+      <div style="margin-top:8px; opacity:0.9;">
+        ${contentHTML}
+      </div>
+    `;
+
+    posts.prepend(rtPost);
+    count++;
+    btn.classList.add("retweeted");
+  }
+
+  countSpan.textContent = count;
+}
+
+/* 公式投稿 */
+function postOfficialAd() {
+  const now = new Date();
+  const hour = now.getHours();
+  let content = `
+    📢 アニメ『くろすけとももた』放送中！<br>
+    毎週金曜よる8時〜<br>
+    ふたりのちょっと不思議な日常をお見逃しなく🐾<br><br>
+    #くろもも #アニメ
+  `;
+  if(hour===20){ content= `🔴 ただいま放送中！<br>#くろもも をつけて感想を投稿してね🐾`; }
+
+  const officialPost = document.createElement("div");
+  officialPost.className="post";
+  officialPost.style.borderLeft="4px solid #ff66aa";
+  officialPost.innerHTML = createPostHTML("くろすけとももた【公式】", content, true, Math.floor(Math.random()*600)+200, Math.floor(Math.random()*200)+50);
+  posts.prepend(officialPost);
+}
+
+/* 一般投稿データ */
+const randomUsers = [
+  "ふわもこマニア","ももた大好き","黒猫同盟","猫派アニメ勢","アニメ鑑賞部",
+  "夜更かしアニメ民","まったり観察隊","くろすけラバー","もふもふ中毒","金曜夜は必見",
+  "推し活日記","今日の回レビュー","アニメ好きOL","学生アニメ部","ねこねこ探偵団",
+  "ほのぼの民","カフェ巡り好き","ねむねむ族","週末ドライブ派","ゆるふわ生活",
+  "料理大好き","甘党男子","スイーツハンター","本屋さん巡り","映画鑑賞中",
+  "早起きチャレンジャー","雨の日散歩","植物観察部","夜空観測隊","写真好きOL",
+  "音楽中毒","ゲーム夜更かし勢","手作り雑貨マニア","猫と暮らす日々","ペット写真部",
+  "DIY好き","カラオケ大好き","バイクツーリング派","昼寝マスター","コーヒー沼",
+  "ゆるキャン△推し","SNS観察員","お菓子作り部","昼食レビュー民","夜食ハンター",
+  "バーチャル旅人","雑誌チェック隊","健康オタク","スマホカメラ愛好家","昔話好き"
+];
+
+const randomPosts = [
+  "今週の回やばくない？🐾","ももたのあのセリフ泣いた…","作画めっちゃ良かった✨",
+  "金曜が生きがい","エンディング曲神🙏","次回予告気になる",
+  "今日のカフェめっちゃ美味しかった☕","雨の日の散歩はやっぱり気持ちいい",
+  "最近寝不足すぎる…💦","猫の写真撮った📸かわいすぎ","手作りクッキー焼いた🍪",
+  "昼寝したら最高に回復した","昨日の映画良すぎて泣いた…🎬","バイクでツーリング行きたい",
+  "夜空の星がきれいすぎる✨","今日は部屋の掃除日和🧹","SNSで見た面白い動画ｗ",
+  "甘いもの食べすぎてやばい","早起きしたら朝日が最高だった🌅","友達とカラオケ行ってストレス発散🎤",
+  "最近ゲームばっかやってる…","DIYで棚作ったら意外と上手くいった","写真加工してたら時間が溶けた",
+  "健康のために歩くの頑張ろう","お菓子作り失敗したけど笑ったｗ","ねこの寝顔見て癒された",
+  "週末は映画マラソン決定🎥","雑誌の付録が思ったより可愛い","昨日買ったコーヒー豆が香り最高☕",
+  "今日は昼食ラーメンにした🍜","夜食でピザ食べちゃった…","友達とオンライン飲み会楽しすぎた🍻"
+];
+
+const nightPosts = [
+  "夜食でピザ食べちゃった…",
+  "深夜の散歩は静かで癒される🌙",
+  "夜空の星がきれいすぎる✨",
+  "猫の寝顔見て癒された🐱",
+  "0時～3時の間だけなんかおかしいページある…",
+  "明日早いのに夜更かし中…💦",
+  "静かな夜に音楽聴くの最高🎵",
+  "ねえ、21時44分から事件って検索すると朝見れなかった記事見れるようになってる…",
+  "深夜の甘いものってなんでこんなに美味しいの…？",
+  "夜景撮りに行きたい🏙️",
+  "オンラインゲームで夜更かし中🎮",
+  "夜に考え事するとなんか集中できる",
+  "寝る前のコーヒーは危険…でも美味しい☕",
+  "夜の散歩中に猫と遭遇した🐾",
+  "深夜アニメ視聴中、止まらない…"
+];
+
+function getRandomItem(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
+
+/* 一般投稿生成 */
+function createRandomPost() {
+  const hour = new Date().getHours();
+  let content;
+
+  if(hour >= 18 || hour < 6) { // 夜ならnightPosts
+    content = getRandomItem(nightPosts);
+  } else { // 昼ならdayPosts
+    content = getRandomItem(randomPosts); 
+}
+
+  const username = getRandomItem(randomUsers);
+
+  const post = document.createElement("div");
+  post.className = "post";
+  post.innerHTML = createPostHTML(username, content);
+
+  posts.prepend(post);
+}
+
+/* 初期処理 */
+window.addEventListener("DOMContentLoaded", function() {
+
+  const hour = new Date().getHours();
+
+  if(hour >= 0 && hour <= 5) {
+    document.body.classList.add("night");
+  }
+
+  for(let i=0;i<5;i++){
+    createRandomPost();
+  }
+
+  postOfficialAd();
+
+  // ⏳ 30秒後にもう1投稿（生きてる感）
+ setTimeout(function() {
+  const content = `次回予告を公開しました🐾✨<br>公式サイトをチェック！`;
+  const extraPost = document.createElement("div");
+  extraPost.className = "post";
+  extraPost.style.borderLeft = "4px solid #ff66aa";
+  extraPost.innerHTML = createPostHTML(
+    "くろすけとももた【公式】", // ユーザー名
+    content,                     // 投稿内容
+    true                         // verified
+  );
+
+  posts.prepend(extraPost);
+}, 30000);
+
+
+  setInterval(function(){
+    createRandomPost();
+  },30000);
+
+
+   /* 自然増加 */
+ setInterval(function() {
+  const allPosts = document.querySelectorAll(".post");
+
+  allPosts.forEach(post => {
+    const username = post.querySelector(".username").dataset.name;
+
+    // 「あなた」の投稿はスキップ
+    if(username === "あなた") return;
+
+    const likeSpan = post.querySelector(".like-count");
+    const rtSpan = post.querySelector(".rt-count");
+
+    let likeCount = parseInt(likeSpan.textContent);
+    let rtCount = parseInt(rtSpan.textContent);
+
+    if(username.includes("公式")) {
+      // 公式はいいねもRTも増える
+      likeCount += Math.floor(Math.random() * 5) + 2;
+      rtCount += Math.floor(Math.random() * 3) + 1;
+    } else {
+      // 一般ユーザーはいいねだけ増える
+      if(Math.random() < 0.4) likeCount += 1;
+    }
+
+    likeSpan.textContent = likeCount;
+    rtSpan.textContent = rtCount;
+  });
+}, 30000);
+
+});
+</script>
+
+</body>
+</html>
