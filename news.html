@@ -88,6 +88,43 @@ footer{
   text-align:center;
   color:#666;
 }
+
+.glitch{
+  animation: none;
+}
+
+.glitch.active{
+  animation: noise 0.2s linear 6;
+}
+
+.glitch.active a{
+  animation: redText 0.25s linear 1;
+}
+
+.glitch.active .flash{
+  animation: darkRedLabel 0.25s linear 1;
+}
+
+@keyframes redText{
+  0% { color:#0033cc; }
+  50% { color:red; }
+  100% { color:#0033cc; }
+}
+
+@keyframes darkRedLabel{
+  0% { background:#e60012; }
+  50% { background:#8b0000; } /* 暗赤 */
+  100% { background:#e60012; }
+}
+@keyframes noise{
+  0% { transform: translate(0,0); opacity:1; }
+  20% { transform: translate(-2px,2px); }
+  40% { transform: translate(2px,-2px); }
+  60% { transform: translate(-2px,-1px); }
+  80% { transform: translate(2px,1px); }
+  100% { transform: translate(0,0); opacity:1; }
+}
+
 </style>
 </head>
 <body>
@@ -113,6 +150,10 @@ footer{
 <li><a href="#">制作陣「物語はここから動く」</a></li>
 <li><a href="#">深夜限定で公開された記事とは</a></li>
 <li><a href="#">SNSでトレンド入りした理由</a></li>
+<li id="nightArticle" style="display:none;">
+<span class="flash">2009年 両親死亡事件</span>
+<a href="Hanasoda!ニュース.html">【速報】自宅で両親死亡、5歳女児を保護　近隣住民が通報</a>
+</li>
 </ul>
 </div>
 
@@ -134,6 +175,36 @@ footer{
 <footer>
 © Hanasoda!ニュース
 </footer>
+
+<script>
+window.onload = function(){
+
+  const now = new Date();
+  const h = now.getHours();
+  const m = now.getMinutes();
+  const s = now.getSeconds();
+
+  const current = h*3600 + m*60 + s;
+
+  const start = 21*3600 + 44*60 + 13;
+  const end = 5*3600 + 59*60 + 59;
+
+  const nightArticle = document.getElementById("nightArticle");
+
+  if(current >= start || current <= end){
+
+    // 表示
+    nightArticle.style.display = "list-item";
+
+    // ザザザ発動
+    setTimeout(() => {
+      nightArticle.classList.add("active");
+    }, 100);
+
+  }
+
+};
+</script>
 
 </body>
 </html>
