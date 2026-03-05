@@ -8,7 +8,9 @@
 body {
   background-color: #f6f1eb;
   color: #4b3a2f;
-  font-family: "Hiragino Mincho ProN", serif;
+  font-family: "Hiragino Maru Gothic Pro", "Yu Gothic UI", "Yu Gothic", "Rounded M+", sans-serif;
+  font-weight: 600;       /* 少し太め */
+  letter-spacing: 0.05em; /* 文字間を少し広めに */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -133,7 +135,7 @@ const container = document.getElementById('textContainer');
 const intro = `お待たせいたしました！こちらFlora Itsuki の桜井です。
 花束のご購入ですか？`;
 
-const branchYes = `わぁ、応募してくださるんですね！🌿
+const branchYes = `わぁ！応募してくださるんですね！！🌿
 それでは、面接の日程を決めましょう！`;
 
 const branchNo = `あら、間違えましたか？
@@ -157,7 +159,7 @@ function typeText(text, callback) {
       clearInterval(interval);
       if (callback) callback();
     }
-  }, 40);
+  }, 80);
 }
 
 // 選択肢
