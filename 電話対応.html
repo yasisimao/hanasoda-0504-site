@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>応募ページ - Flora Itsuki</title>
+<style>
+body {
+  background-color: #f6f1eb;
+  color: #4b3a2f;
+  font-family: "Hiragino Mincho ProN", serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 600px;
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(90,62,43,0.1);
+  font-size: 18px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
+.cursor {
+  display: inline-block;
+  width: 2px;
+  background-color: #4b3a2f;
+  animation: blink 1s infinite;
+  vertical-align: bottom;
+}
+
+@keyframes blink {
+  0%, 50%, 100% { opacity: 1; }
+  25%, 75% { opacity: 0; }
+}
+
+.choice-buttons {
+  margin-top: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+.choice-buttons button {
+  flex: 1;
+  padding: 12px 20px;
+  border-radius: 25px;
+  border: none;
+  background-color: #7a5c47;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.choice-buttons button:hover {
+  background-color: #5a3e2b;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+  gap: 16px;
+}
+
+form input[type="text"],
+form input[type="date"] {
+  width: 80%;
+  padding: 12px 16px;
+  border: 2px solid #d2b8a3;
+  border-radius: 12px;
+  font-size: 16px;
+  outline: none;
+  transition: 0.3s;
+}
+
+form input[type="text"]:focus,
+form input[type="date"]:focus {
+  border-color: #a67c52;
+  background-color: #fdf6f0;
+}
+
+form button.send {
+  width: 50%;
+  padding: 12px 0;
+  background-color: #a67c52;
+  color: white;
+  border: none;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+form button.send:hover {
+  background-color: #8c5e3b;
+}
+
+button.end-call {
+  display: block;
+  margin: 30px auto 0;
+  background-color: #5a3e2b;
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 14px 36px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button.end-call:hover {
+  background-color: #3e2c1f;
+}
+</style>
+</head>
+<body>
+
+<div class="container" id="textContainer"></div>
+
+<script>
+const container = document.getElementById('textContainer');
+
+// 文章
+const intro = `お待たせいたしました！こちらFlora Itsuki の桜井です。
+花束のご購入ですか？`;
+
+const branchYes = `わぁ、応募してくださるんですね！🌿
+それでは、面接の日程を決めましょう！`;
+
+const branchNo = `あら、間違えましたか？
+大丈夫ですよ。また気が向いたらいつでも見に来てくださいね。
+失礼いたします。`;
+
+// 文字を打つアニメーション
+function typeText(text, callback) {
+  container.innerHTML = '';
+  const cursor = document.createElement('span');
+  cursor.className = 'cursor';
+  cursor.textContent = ' ';
+  container.appendChild(cursor);
+
+  let i = 0;
+  const interval = setInterval(() => {
+    if (i < text.length) {
+      cursor.insertAdjacentText('beforebegin', text[i]);
+      i++;
+    } else {
+      clearInterval(interval);
+      if (callback) callback();
+    }
+  }, 40);
+}
+
+// 選択肢
+function showChoices() {
+  const buttonsDiv = document.createElement('div');
+  buttonsDiv.className = 'choice-buttons';
+
+  const yesBtn = document.createElement('button');
+  yesBtn.textContent = "アルバイトに応募したい";
+  yesBtn.onclick = () => {
+    buttonsDiv.remove();
+    typeText(branchYes, showForm);
+  };
+
+  const noBtn = document.createElement('button');
+  noBtn.textContent = "間違えました";
+  noBtn.onclick = () => {
+    buttonsDiv.remove();
+    typeText(branchNo, showEndButton);
+  };
+
+  buttonsDiv.appendChild(yesBtn);
+  buttonsDiv.appendChild(noBtn);
+  container.appendChild(buttonsDiv);
+}
+
+// 面接フォーム
+function showForm() {
+  const form = document.createElement('form');
+
+  const nameInput = document.createElement('input');
+  nameInput.type = 'text';
+  nameInput.placeholder = 'お名前';
+
+  const dateInput = document.createElement('input');
+  dateInput.type = 'date';
+
+  const submitBtn = document.createElement('button');
+  submitBtn.type = 'button';
+  submitBtn.className = 'send';
+  submitBtn.textContent = '送信';
+
+  submitBtn.onclick = () => {
+    const name = nameInput.value || "お名前未入力";
+    const dateValue = dateInput.value;
+
+    if (!dateValue) {
+      typeText("日付を選んでください。", showRetryButton);
+      return;
+    }
+
+    const selectedDate = new Date(dateValue);
+    const today = new Date();
+    today.setHours(0,0,0,0);
+
+    if (selectedDate < today) {
+      typeText("申し訳ありません…その日は難しいです💦\n他にご都合の良い日を教えてください。", showRetryButton);
+      return;
+    }
+
+    const confirmMessage = `${name}さんですね。  
+${dateValue}でお間違いないですか？`;
+
+    typeText(confirmMessage, showConfirmButtons);
+  };
+
+  form.appendChild(nameInput);
+  form.appendChild(dateInput);
+  form.appendChild(submitBtn);
+  container.appendChild(form);
+}
+
+// 再入力
+function showRetryButton() {
+  const retryDiv = document.createElement('div');
+  retryDiv.className = 'choice-buttons';
+
+  const retryBtn = document.createElement('button');
+  retryBtn.textContent = "もう一度入力する";
+  retryBtn.onclick = () => {
+    retryDiv.remove();
+    showForm();
+  };
+
+  retryBtn.style.backgroundColor = "#a67c52";
+  retryBtn.style.color = "#fff";
+  retryBtn.style.borderRadius = "25px";
+
+  retryDiv.appendChild(retryBtn);
+  container.appendChild(retryDiv);
+}
+
+// 確認
+function showConfirmButtons() {
+  const buttonsDiv = document.createElement('div');
+  buttonsDiv.className = 'choice-buttons';
+
+  const yesBtn = document.createElement('button');
+  yesBtn.textContent = "はい";
+  yesBtn.onclick = () => {
+    buttonsDiv.remove();
+    typeText(
+      "ではこちらの日程で面接を実施させていただきますね。\n面接時は私服で大丈夫です🌿\nお店でお会いできるのを楽しみにしています！",
+      showTimeQuestion
+    );
+  };
+
+  const fixBtn = document.createElement('button');
+  fixBtn.textContent = "修正する";
+  fixBtn.onclick = () => {
+    buttonsDiv.remove();
+    showForm();
+  };
+
+  buttonsDiv.appendChild(yesBtn);
+  buttonsDiv.appendChild(fixBtn);
+  container.appendChild(buttonsDiv);
+}
+
+// 面接時間質問
+function showTimeQuestion() {
+  const buttonsDiv = document.createElement('div');
+  buttonsDiv.className = 'choice-buttons';
+
+  const timeBtn = document.createElement('button');
+  timeBtn.textContent = "あの…面接の時間は？";
+  timeBtn.onclick = () => {
+    buttonsDiv.remove();
+    typeText(
+      "あ！すみません忘れてました！\n営業時間内ならいつでも大丈夫ですよ！都合の良い時間にいらしてください🌿",
+      showEndButton
+    );
+  };
+
+  buttonsDiv.appendChild(timeBtn);
+  container.appendChild(buttonsDiv);
+}
+
+// 電話終了
+function showEndButton() {
+  const endBtn = document.createElement('button');
+  endBtn.textContent = "電話を切る";
+  endBtn.className = "end-call";
+  endBtn.onclick = () => {
+    window.location.href = "フローライツキ.html";
+  };
+  container.appendChild(endBtn);
+}
+
+// スタート
+typeText(intro, showChoices);
+</script>
+
+</body>
+</html>
