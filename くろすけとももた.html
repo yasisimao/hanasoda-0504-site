@@ -111,6 +111,7 @@ footer{
   <a href="#character">キャラクター</a>
   <a href="#info">放送情報</a>
   <a href="#goods">グッズ</a>
+  <a href="#music">音源</a>
 </nav>
 
 <section id="story">
@@ -156,7 +157,7 @@ footer{
 </section>
 
 <section id="info">
-  <h2>放送情報</h2>
+  <h2><ruby>放送情報<rt>ほうそうじょうほう</rt></h2>
   <p>
   <ruby>毎週<rt>まいしゅう</rt></ruby>
   <ruby>金曜日<rt>きんようび</rt></ruby>
@@ -175,6 +176,56 @@ footer{
   </p>
 </section>
 
+<section id="music"> <h2><ruby>音源公開<rt>おんげんこうかい</rt></h2>
+ <p> くろすけとももたの<ruby>世界<rt>せかい</rt>を<br>
+ <ruby>音<rt>おと</rt>でお<ruby>楽<rt>たの</rt>しみください。<br>
+<h6>※この音源はAIで生成したものです。</h6> </p>
+<audio id="bgm"></audio>
+
+<div style="margin-top:20px;">
+
+  <!-- OP -->
+  <button onclick="toggleMusic('くろすけとももたOP.mp4', this)"
+    style="padding:12px 20px; margin:6px; border:none; border-radius:999px; background:#d6a5af; color:white;">
+    ▶ OP
+  </button>
+
+  <!-- ED -->
+  <button onclick="toggleMusic('くろすけとももたED.mp4', this)"
+    style="padding:12px 20px; margin:6px; border:none; border-radius:999px; background:#a5c9d6; color:white;">
+    ▶ ED
+  </button>
+
+</div>
+
+<script>
+let currentSrc = "";
+
+function toggleMusic(src, btn){
+  const audio = document.getElementById('bgm');
+
+  // 同じ曲が再生中なら停止
+  if(currentSrc === src && !audio.paused){
+    audio.pause();
+    currentSrc = "";
+    btn.innerText = btn.innerText.replace("⏸", "▶");
+    return;
+  }
+
+  // 別の曲 or 初回再生
+  audio.src = src;
+  audio.play();
+  currentSrc = src;
+
+  // ボタン表示リセット
+  document.querySelectorAll("button").forEach(b => {
+    b.innerText = b.innerText.replace("⏸", "▶");
+  });
+
+  // 押したボタンだけ停止表示に
+  btn.innerText = btn.innerText.replace("▶", "⏸");
+}
+</script>
 <div class="back-top">
   <a href="#top">トップへ</a>
 </div>
