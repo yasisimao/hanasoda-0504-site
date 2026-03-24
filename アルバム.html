@@ -9,7 +9,7 @@ body {
   margin: 0;
   background: linear-gradient(#fdf8f5, #f6f1eb);
   font-family: "Hiragino Mincho ProN", serif;
-  overflow: hidden;
+  overflow-x: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -17,19 +17,24 @@ body {
   height: 100vh;
 }
 
+/* 本全体のコンテナ */
 .book-container {
   position: relative;
-  width: 80vw;
+  width: 90vw;
   max-width: 800px;
+  margin: 20px auto;
 }
 
+/* 本の形 */
 .book {
   position: relative;
   width: 100%;
-  height: 60vh;
+  max-height: 70vh;
+  aspect-ratio: 1 / 1.4;
   perspective: 2000px;
 }
 
+/* ページ */
 .page {
   position: absolute;
   width: 50%;
@@ -49,11 +54,32 @@ body {
 
 .content {
   padding: 20px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* 縦中央 */
+  align-items: center;     /* 横中央 */
   text-align: center;
 }
-img { max-width: 100%; max-height: 50%; border-radius: 10px; }
-.meta { margin-top: 10px; font-size: 13px; color: #888; }
-.caption { margin-top: 10px; font-size: 16px; color: #5a4a42; }
+
+.page img {
+  max-width: 90%;
+  max-height: 45%;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-bottom: 20px;
+}
+
+.meta {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 5px;
+}
+
+.caption {
+  font-size: 16px;
+  color: #5a4a42;
+}
 
 .cover-page {
   display: flex;
@@ -63,6 +89,7 @@ img { max-width: 100%; max-height: 50%; border-radius: 10px; }
   color: #5a4a42;
 }
 
+/* 裏表紙下中央ボタン */
 .return-btn {
   position: absolute;
   bottom: -50px;
@@ -89,10 +116,10 @@ img { max-width: 100%; max-height: 50%; border-radius: 10px; }
 
 <script>
 const pagesData = [
-  {img:"image1.jpg", date:"2025.04.01", place:"公園", text:"春のはじまり"},
-  {img:"image2.jpg", date:"2025.05.10", place:"カフェ", text:"やさしい時間"},
-  {img:"image3.jpg", date:"2025.06.20", place:"帰り道", text:"ふたりの記憶"},
-  {img:"image4.jpg", date:"2025.07.02", place:"海", text:"少しだけ特別な日"}
+  {img:"花屋ヘッダー.png", date:"2025.04.01", place:"公園", text:"春のはじまり"},
+  {img:"花束.png", date:"2025.05.10", place:"カフェ", text:"やさしい時間"},
+  {img:"季節の花.png", date:"2025.06.20", place:"帰り道", text:"ふたりの記憶"},
+  {img:"鉢植え.png", date:"2025.07.02", place:"海", text:"少しだけ特別な日"}
 ];
 
 let stage = 0;
@@ -157,6 +184,11 @@ function createPage(index, side){
 function createCover(text, side){
   const page = document.createElement("div");
   page.className = "page " + side;
+
+  // 表紙・裏表紙を淡いクリーム色に統一
+  const bgColor = "#f9e8d6";
+  page.style.background = bgColor;
+
   page.innerHTML = `<div class="content cover-page">${text}</div>`;
   return page;
 }
@@ -207,8 +239,8 @@ bookContainer.addEventListener('touchend', (e)=>{
 function handleGesture(){
   if(animating) return;
   const diff = touchEndX - touchStartX;
-  if(diff > 50){ flipPage('left'); } // 右スワイプ → 前のページ
-  else if(diff < -50){ flipPage('right'); } // 左スワイプ → 次のページ
+  if(diff > 50){ flipPage('left'); }
+  else if(diff < -50){ flipPage('right'); }
 }
 
 renderStage();
