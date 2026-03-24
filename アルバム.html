@@ -17,7 +17,6 @@ body {
   height: 100vh;
 }
 
-/* 本全体のコンテナ */
 .book-container {
   position: relative;
   width: 90vw;
@@ -25,7 +24,6 @@ body {
   margin: 20px auto;
 }
 
-/* 本の形 */
 .book {
   position: relative;
   width: 100%;
@@ -34,7 +32,6 @@ body {
   perspective: 2000px;
 }
 
-/* ページ */
 .page {
   position: absolute;
   width: 50%;
@@ -57,8 +54,8 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  justify-content: center; /* 縦中央 */
-  align-items: center;     /* 横中央 */
+  justify-content: center;
+  align-items: center;
   text-align: center;
 }
 
@@ -89,7 +86,6 @@ body {
   color: #5a4a42;
 }
 
-/* 裏表紙下中央ボタン */
 .return-btn {
   position: absolute;
   bottom: -50px;
@@ -105,6 +101,11 @@ body {
   box-shadow: 0 5px 15px rgba(0,0,0,0.2);
 }
 .return-btn:hover { background: rgba(255, 240, 230, 0.9); }
+
+/* スマホは1ページ表示 */
+@media (max-width: 600px) {
+  .page { width: 100%; }
+}
 </style>
 </head>
 <body>
@@ -127,6 +128,8 @@ let animating = false;
 
 const bookContainer = document.getElementById("bookContainer");
 const returnBtn = document.getElementById("returnBtn");
+const isMobile = window.innerWidth <= 600;
+
 returnBtn.onclick = ()=>{ stage = 0; renderStage(); };
 
 function renderStage(){
@@ -139,30 +142,37 @@ function renderStage(){
     cover.style.transform = "rotateY(0deg)";
     cover.onclick = ()=>flipPage('right');
     book.appendChild(cover);
-  } else if(stage===1){
-    const left = createPage(0,"left");
-    const right = createPage(1,"right");
-    left.style.transform = "rotateY(0deg)";
-    right.style.transform = "rotateY(0deg)";
-    left.onclick = ()=>flipPage('left');
-    right.onclick = ()=>flipPage('right');
-    book.appendChild(left);
-    book.appendChild(right);
-  } else if(stage===2){
-    const left = createPage(2,"left");
-    const right = createPage(3,"right");
-    left.style.transform = "rotateY(0deg)";
-    right.style.transform = "rotateY(0deg)";
-    left.onclick = ()=>flipPage('left');
-    right.onclick = ()=>flipPage('right');
-    book.appendChild(left);
-    book.appendChild(right);
-  } else if(stage===3){
+  } 
+  else if(stage>=1 && stage<=4){
+    if(isMobile){
+      let index;
+      if(stage===1) index = 0; // 左ページ
+      else if(stage===2) index = 1; // 右ページ
+      else if(stage===3) index = 2; // 左ページ
+      else if(stage===4) index = 3; // 右ページ
+
+      const page = createPage(index,"right");
+      page.style.transform = "rotateY(0deg)";
+      page.onclick = ()=>flipPage('right');
+      book.appendChild(page);
+    } else {
+      const leftIndex = (stage===1) ? 0 : 2;
+      const rightIndex = (stage===1) ? 1 : 3;
+      const left = createPage(leftIndex,"left");
+      const right = createPage(rightIndex,"right");
+      left.style.transform = "rotateY(0deg)";
+      right.style.transform = "rotateY(0deg)";
+      left.onclick = ()=>flipPage('left');
+      right.onclick = ()=>flipPage('right');
+      book.appendChild(left);
+      book.appendChild(right);
+    }
+  }
+  else if(stage===5){
     const cover = createCover("裏表紙", "left");
     cover.style.transform = "rotateY(0deg)";
     cover.onclick = ()=>flipPage('left');
     book.appendChild(cover);
-
     returnBtn.style.display = "block";
   }
 }
@@ -184,11 +194,7 @@ function createPage(index, side){
 function createCover(text, side){
   const page = document.createElement("div");
   page.className = "page " + side;
-
-  // 表紙・裏表紙を淡いクリーム色に統一
-  const bgColor = "#f9e8d6";
-  page.style.background = bgColor;
-
+  page.style.background = "#f9e8d6"; // 淡いクリーム色
   page.innerHTML = `<div class="content cover-page">${text}</div>`;
   return page;
 }
@@ -196,7 +202,6 @@ function createCover(text, side){
 function flipPage(side){
   if(animating) return;
   animating = true;
-
   const book = document.getElementById("book");
   const currentPages = Array.from(book.children);
 
@@ -205,8 +210,12 @@ function flipPage(side){
     if(!rightPage){ animating=false; return; }
     rightPage.style.transformOrigin = "center left";
     rightPage.style.transform = "rotateY(-180deg)";
-    setTimeout(()=> {
-      stage = Math.min(stage+1,3);
+    setTimeout(()=>{
+      if(isMobile){
+        stage = Math.min(stage+1,5);
+      } else {
+        stage = Math.min(stage+2,5);
+      }
       renderStage(); animating=false;
     }, 1000);
   }
@@ -216,8 +225,12 @@ function flipPage(side){
     if(!leftPage){ animating=false; return; }
     leftPage.style.transformOrigin = "center right";
     leftPage.style.transform = "rotateY(180deg)";
-    setTimeout(()=> {
-      stage = Math.max(stage-1,0);
+    setTimeout(()=>{
+      if(isMobile){
+        stage = Math.max(stage-1,0);
+      } else {
+        stage = Math.max(stage-2,0);
+      }
       renderStage(); animating=false;
     }, 1000);
   }
@@ -226,15 +239,8 @@ function flipPage(side){
 // --- スワイプ操作 ---
 let touchStartX = 0;
 let touchEndX = 0;
-
-bookContainer.addEventListener('touchstart', (e)=>{
-  touchStartX = e.changedTouches[0].screenX;
-});
-
-bookContainer.addEventListener('touchend', (e)=>{
-  touchEndX = e.changedTouches[0].screenX;
-  handleGesture();
-});
+bookContainer.addEventListener('touchstart', (e)=>{ touchStartX = e.changedTouches[0].screenX; });
+bookContainer.addEventListener('touchend', (e)=>{ touchEndX = e.changedTouches[0].screenX; handleGesture(); });
 
 function handleGesture(){
   if(animating) return;
@@ -245,6 +251,5 @@ function handleGesture(){
 
 renderStage();
 </script>
-
 </body>
 </html>
